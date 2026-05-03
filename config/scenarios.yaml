@@ -1,0 +1,107 @@
+scenarios:
+  base_2026_constrained_grid:
+    description: "Reference constrained-grid case with current-like renewable buildout."
+    solar_multiplier: 1.0
+    wind_multiplier: 1.0
+    offshore_multiplier: 1.0
+    line_capacity_multiplier: 1.0
+    add_bess: false
+    flexible_connection: false
+
+  high_solar_growth:
+    description: "Solar-heavy growth case to stress regional connection capacity."
+    solar_multiplier: 1.45
+    wind_multiplier: 1.0
+    offshore_multiplier: 1.0
+    line_capacity_multiplier: 1.0
+    add_bess: false
+    flexible_connection: false
+
+  high_wind_offshore_growth:
+    description: "Offshore/onshore wind growth case with export bottlenecks."
+    solar_multiplier: 1.0
+    wind_multiplier: 1.25
+    offshore_multiplier: 1.55
+    line_capacity_multiplier: 1.0
+    add_bess: false
+    flexible_connection: false
+
+  high_renewables_for_bess_sweep:
+    description: "High-renewables stress case used internally for BESS siting and sizing sweep."
+    solar_multiplier: 1.35
+    wind_multiplier: 1.20
+    offshore_multiplier: 1.35
+    line_capacity_multiplier: 1.0
+    add_bess: false
+    flexible_connection: false
+
+  bess_noord_holland:
+    description: "BESS at Noord-Holland demand/export region."
+    solar_multiplier: 1.20
+    wind_multiplier: 1.10
+    offshore_multiplier: 1.25
+    line_capacity_multiplier: 1.0
+    add_bess: true
+    bess_region: "Noord-Holland"
+    bess_power_mw: 200
+    bess_duration_h: 4
+    flexible_connection: false
+
+  bess_noord_brabant:
+    description: "BESS at Noord-Brabant solar-heavy region."
+    solar_multiplier: 1.20
+    wind_multiplier: 1.10
+    offshore_multiplier: 1.25
+    line_capacity_multiplier: 1.0
+    add_bess: true
+    bess_region: "Noord-Brabant"
+    bess_power_mw: 200
+    bess_duration_h: 4
+    flexible_connection: false
+
+  bess_flevoland:
+    description: "BESS at Flevoland wind/solar region."
+    solar_multiplier: 1.20
+    wind_multiplier: 1.10
+    offshore_multiplier: 1.25
+    line_capacity_multiplier: 1.0
+    add_bess: true
+    bess_region: "Flevoland"
+    bess_power_mw: 200
+    bess_duration_h: 4
+    flexible_connection: false
+
+  flexible_connection_contract:
+    description: "Flexible connection case: industrial/flexible load has lower capacity during congested hours."
+    solar_multiplier: 1.35
+    wind_multiplier: 1.10
+    offshore_multiplier: 1.20
+    line_capacity_multiplier: 1.0
+    add_bess: false
+    flexible_connection: true
+
+  targeted_grid_reinforcement:
+    description: "Targeted reinforcement of selected bottleneck corridors."
+    solar_multiplier: 1.20
+    wind_multiplier: 1.10
+    offshore_multiplier: 1.25
+    line_capacity_multiplier: 1.0
+    line_reinforcements:
+      Noord-Holland__Utrecht: 1.45
+      Utrecht__Noord-Brabant: 1.35
+      Friesland__Flevoland: 1.35
+      Flevoland__Overijssel: 1.35
+    add_bess: false
+    flexible_connection: false
+
+  combined_bess_and_flex:
+    description: "Combined case with BESS and flexible connection rules."
+    solar_multiplier: 1.35
+    wind_multiplier: 1.20
+    offshore_multiplier: 1.35
+    line_capacity_multiplier: 1.0
+    add_bess: true
+    bess_region: "Noord-Brabant"
+    bess_power_mw: 250
+    bess_duration_h: 4
+    flexible_connection: true

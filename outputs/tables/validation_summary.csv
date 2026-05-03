@@ -1,0 +1,9 @@
+check,passed,value,tolerance,details
+required_columns_present,True,none,none missing,Required KPI columns are available for validation.
+curtailment_balance,True,4.656612873077393e-10,0.001,renewable_available_mwh - renewable_dispatch_mwh equals renewable_curtailment_mwh.
+renewable_share_not_above_100_pct,True,76.38126863589343,<=100%,Renewable dispatch share of demand remains physically bounded.
+curtailment_rate_between_0_and_100_pct,True,24.443 to 37.5871,0% to 100%,Curtailment rates are within expected percentage bounds.
+bess_cycles_finite_non_negative,True,0,0,BESS equivalent cycles are finite and non-negative.
+objective_cost_finite_non_negative,True,0,0,Objective costs are finite and non-negative.
+all_scenarios_solved_optimal,True,all optimal,all optimal,Every scenario reports PyPSA status ok and optimal termination.
+recommendation_ranks_complete,True,9,9,Recommendation ranks form a complete 1..N sequence.

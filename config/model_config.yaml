@@ -1,0 +1,123 @@
+model:
+  snapshots: 168
+  start: "2026-01-01 00:00"
+  profile_source: "proxy"
+  real_profile_csv: "data/raw/opsd_time_series_60min_singleindex.csv"
+  backup_marginal_cost_eur_per_mwh: 95
+  backup_emission_tco2_per_mwh: 0.42
+  renewable_curtailment_value_eur_per_mwh: 65
+  line_overload_penalty_eur_per_line_hour: 15000
+  congestion_utilisation_threshold_pct: 90
+  calibration_note: "Demand is scaled to the 2023 Dutch electricity-use level of about 116 TWh. Renewable capacity is calibrated from CBS public statistics; grid topology and line ratings remain simplified portfolio assumptions."
+
+data_sources:
+  national_electricity_use: "Compendium voor de Leefomgeving/CBS, electricity consumption in the Netherlands, 2023: about 116 billion kWh."
+  renewable_capacity_totals: "CBS StatLine 82610ENG, renewable electricity production and capacity, 2024 revised provisional figures: solar PV 24,772 MW, onshore wind 6,955 MW, offshore wind 4,748 MW."
+  provincial_capacity_split: "CBS Netherlands in Numbers 2023 provincial table, installed solar and onshore wind capacity by province for 2022; used as provincial shares and scaled to CBS 2024 national totals."
+  modelling_scope: "Simplified Netherlands-inspired constrained-grid model. It is not a validated Dutch transmission-grid digital twin."
+
+bess_business_case:
+  power_capex_eur_per_kw: 155
+  energy_capex_eur_per_kwh: 210
+  fixed_om_pct_of_capex_per_year: 0.025
+  economic_lifetime_years: 15
+  discount_rate_pct: 7.0
+
+regions:
+  - Noord-Holland
+  - Zuid-Holland
+  - Utrecht
+  - Noord-Brabant
+  - Gelderland
+  - Limburg
+  - Groningen
+  - Flevoland
+  - Zeeland
+  - Friesland
+  - Overijssel
+  - Drenthe
+
+demand_base_mw:
+  Noord-Holland: 2093
+  Zuid-Holland: 2674
+  Utrecht: 1163
+  Noord-Brabant: 1814
+  Gelderland: 1442
+  Limburg: 1000
+  Groningen: 837
+  Flevoland: 558
+  Zeeland: 698
+  Friesland: 721
+  Overijssel: 977
+  Drenthe: 605
+
+renewables_mw:
+  solar:
+    Noord-Holland: 2364
+    Zuid-Holland: 2700
+    Utrecht: 1307
+    Noord-Brabant: 4305
+    Gelderland: 3187
+    Limburg: 1924
+    Groningen: 1741
+    Flevoland: 1137
+    Zeeland: 943
+    Friesland: 1329
+    Overijssel: 2104
+    Drenthe: 1732
+  wind:
+    Noord-Holland: 839
+    Zuid-Holland: 871
+    Utrecht: 38
+    Noord-Brabant: 347
+    Gelderland: 261
+    Limburg: 132
+    Groningen: 936
+    Flevoland: 1851
+    Zeeland: 636
+    Friesland: 688
+    Overijssel: 82
+    Drenthe: 274
+  offshore_wind:
+    Noord-Holland: 1900
+    Zuid-Holland: 1900
+    Zeeland: 948
+
+network_lines:
+  - [Noord-Holland, Friesland, 850]
+  - [Noord-Holland, Flevoland, 650]
+  - [Noord-Holland, Utrecht, 900]
+  - [Noord-Holland, Zuid-Holland, 1200]
+  - [Zuid-Holland, Utrecht, 850]
+  - [Zuid-Holland, Zeeland, 700]
+  - [Utrecht, Gelderland, 650]
+  - [Utrecht, Noord-Brabant, 750]
+  - [Noord-Brabant, Limburg, 620]
+  - [Noord-Brabant, Zeeland, 520]
+  - [Gelderland, Overijssel, 600]
+  - [Gelderland, Limburg, 500]
+  - [Overijssel, Drenthe, 450]
+  - [Drenthe, Groningen, 420]
+  - [Friesland, Groningen, 500]
+  - [Friesland, Flevoland, 450]
+  - [Flevoland, Overijssel, 420]
+
+bess_siting:
+  candidate_regions:
+    - Noord-Holland
+    - Flevoland
+    - Noord-Brabant
+    - Zuid-Holland
+    - Groningen
+    - Zeeland
+  power_mw: [50, 100, 200, 400]
+  duration_h: [1, 2, 4]
+  evaluation_scenario: "high_renewables_for_bess_sweep"
+  max_cases: null
+
+flexible_connection:
+  target_region: "Noord-Brabant"
+  flexible_load_mw: 250
+  congested_hour_capacity_factor: 0.25
+  uncongested_hour_capacity_factor: 1.0
+  congestion_threshold_pct: 90

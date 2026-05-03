@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pypsa-nl-grid-flexibility"
+version = "0.1.0"
+description = "Netherlands-inspired PyPSA grid congestion, BESS and flexible connection modelling portfolio project"
+requires-python = ">=3.10"
+authors = [{name = "Abhijith Sivaprasadan"}]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+filterwarnings = [
+    "ignore:You are using a Python version.*:FutureWarning:google\\.api_core\\._python_version_support",
+]

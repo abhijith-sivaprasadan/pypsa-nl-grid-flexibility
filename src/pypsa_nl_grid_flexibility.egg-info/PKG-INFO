@@ -1,0 +1,6 @@
+Metadata-Version: 2.4
+Name: pypsa-nl-grid-flexibility
+Version: 0.1.0
+Summary: Netherlands-inspired PyPSA grid congestion, BESS and flexible connection modelling portfolio project
+Author: Abhijith Sivaprasadan
+Requires-Python: >=3.10
