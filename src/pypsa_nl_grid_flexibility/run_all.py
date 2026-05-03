@@ -33,8 +33,10 @@ from pypsa_nl_grid_flexibility.bess_siting import (
 )
 from pypsa_nl_grid_flexibility.plotting import plot_bess_sweep, plot_summary
 from pypsa_nl_grid_flexibility.reporting import (
+    write_pdf_report,
     update_readme_latest_results,
     write_executive_report,
+    write_report_bundle,
     write_portfolio_summary,
 )
 
@@ -132,11 +134,15 @@ def main() -> None:
     write_executive_report(summary, bess_summary, validation)
     write_portfolio_summary(summary, bess_summary, validation)
     update_readme_latest_results(summary, bess_summary, validation)
+    bundle_path = write_report_bundle()
+    pdf_path = write_pdf_report(summary, bess_summary, validation)
 
     print("\nScenario summary:")
     print(summary.round(2).to_string(index=False))
     print("\nValidation summary:")
     print(validation.to_string(index=False))
+    print(f"\nPDF report written to: {pdf_path}")
+    print(f"\nReport bundle written to: {bundle_path}")
     print(f"\nOutputs written to {TABLE_DIR.parent}")
 
 

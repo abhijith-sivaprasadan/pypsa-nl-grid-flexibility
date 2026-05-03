@@ -75,6 +75,9 @@ outputs/tables/bess_top10_siting_sizing_options.csv
 outputs/tables/bess_business_case.csv
 outputs/figures/*.png
 outputs/reports/executive_grid_flexibility_report.md
+outputs/reports/executive_grid_flexibility_report.pdf
+outputs/reports/portfolio_summary.md
+outputs/reports/pypsa_nl_grid_flexibility_report_bundle.zip
 ```
 
 `validation_summary.csv` is intended as a quick audit trail. It checks:
@@ -103,6 +106,7 @@ High-renewable scenarios can increase absolute curtailment because renewable ava
 ## Latest Generated Results
 
 This section is generated from the latest files in `outputs/tables/` when `python -m pypsa_nl_grid_flexibility.run_all` is executed.
+The dashboard also exposes the generated PDF report and the full ZIP bundle for download.
 
 - Top-ranked scenario: **High Wind Offshore Growth** with grid-value score **60.8**.
 - It adds **201,561 MWh** of renewable dispatch and reduces backup generation by **201,561 MWh** versus base.

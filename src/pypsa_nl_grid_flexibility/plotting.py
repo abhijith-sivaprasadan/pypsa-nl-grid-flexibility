@@ -64,7 +64,7 @@ def plot_summary(summary: pd.DataFrame) -> None:
             "grid_value_score",
             "Scenario decision-support score",
             "Grid value score [-]",
-            "scenario_grid_value_score.png",
+            "grid_value_score_by_scenario.png",
         )
 
     if "renewable_share_of_demand_pct" in plot_data.columns:

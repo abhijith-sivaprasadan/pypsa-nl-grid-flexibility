@@ -11,3 +11,4 @@ data/raw/*.csv
 data/processed/*.csv
 outputs/tables/hourly_*.csv
 outputs/tables/solve_log.csv
+outputs/reports/*.zip

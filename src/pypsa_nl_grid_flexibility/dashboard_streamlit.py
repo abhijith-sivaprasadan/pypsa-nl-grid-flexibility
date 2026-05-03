@@ -10,6 +10,8 @@ import streamlit as st
 from pypsa_nl_grid_flexibility.config import TABLE_DIR, load_model_config
 from pypsa_nl_grid_flexibility.reporting import (
     build_key_findings_lines,
+    build_pdf_report_bytes,
+    build_report_bundle_bytes,
     build_portfolio_summary_markdown,
 )
 
@@ -161,6 +163,8 @@ def read_csv_if_exists(path: Path, **kwargs) -> pd.DataFrame:
 
 summary_path = find_output_file("scenario_summary.csv")
 validation_path = find_output_file("validation_summary.csv")
+pdf_path = find_output_file("executive_grid_flexibility_report.pdf")
+bundle_path = find_output_file("pypsa_nl_grid_flexibility_report_bundle.zip")
 bess_path = find_output_file("bess_siting_sizing_sweep.csv")
 hourly_path = find_output_file("hourly_dispatch.csv")
 bottleneck_path = find_output_file("bottleneck_diagnostics.csv")
@@ -184,6 +188,8 @@ with st.sidebar:
     st.subheader("Output Files")
     st.caption(str(summary_path))
     st.caption(str(validation_path))
+    st.caption(str(pdf_path))
+    st.caption(str(bundle_path))
     st.caption(str(hourly_path))
     st.caption(str(bess_path))
     st.caption(str(bottleneck_path))
@@ -1089,3 +1095,34 @@ with tab6:
         mime="text/markdown",
     )
     st.markdown(portfolio_summary)
+
+    st.markdown("### Full report bundle")
+    st.markdown("### PDF report")
+    if pdf_path.exists():
+        pdf_bytes = pdf_path.read_bytes()
+        pdf_label = "Download PDF report"
+    else:
+        pdf_bytes = build_pdf_report_bytes(summary, bess, validation)
+        pdf_label = "Generate PDF report"
+
+    st.download_button(
+        pdf_label,
+        data=pdf_bytes,
+        file_name="executive_grid_flexibility_report.pdf",
+        mime="application/pdf",
+    )
+
+    st.markdown("### Full report bundle")
+    if bundle_path.exists():
+        bundle_bytes = bundle_path.read_bytes()
+        bundle_label = "Download full report bundle"
+    else:
+        bundle_bytes, manifest = build_report_bundle_bytes()
+        bundle_label = f"Generate full report bundle ({len(manifest)} files)"
+
+    st.download_button(
+        bundle_label,
+        data=bundle_bytes,
+        file_name="pypsa_nl_grid_flexibility_report_bundle.zip",
+        mime="application/zip",
+    )
