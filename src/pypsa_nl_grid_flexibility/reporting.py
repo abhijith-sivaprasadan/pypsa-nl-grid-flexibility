@@ -410,7 +410,7 @@ def build_key_findings_lines(
 
     if validation_total:
         lines.append(
-            f"- Validation checks passed: **{validation_passed}/{validation_total}**."
+            f"- Automated consistency checks passed: **{validation_passed}/{validation_total}**."
         )
 
     return lines
@@ -1111,7 +1111,7 @@ def write_executive_report(
         lines += [
             "## Validation summary",
             "",
-            f"- Validation checks passed: **{passed}/{total}**",
+            f"- Automated consistency checks passed: **{passed}/{total}**",
         ]
         if failed:
             lines.append(f"- Failed checks: **{', '.join(failed)}**")

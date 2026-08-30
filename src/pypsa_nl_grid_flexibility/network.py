@@ -251,7 +251,7 @@ def optimise_network(network: pypsa.Network) -> tuple[str, str]:
         "termination_condition": condition,
     }
 
-    if status != "ok":
+    if status != "ok" or condition != "optimal":
         raise RuntimeError(
             f"PyPSA optimisation failed. Status: {status}, condition: {condition}"
         )
