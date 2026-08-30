@@ -11,8 +11,8 @@ from pypsa_nl_grid_flexibility.config import TABLE_DIR, load_model_config
 from pypsa_nl_grid_flexibility.reporting import (
     build_key_findings_lines,
     build_pdf_report_bytes,
-    build_report_bundle_bytes,
     build_portfolio_summary_markdown,
+    build_report_bundle_bytes,
 )
 
 st.set_page_config(

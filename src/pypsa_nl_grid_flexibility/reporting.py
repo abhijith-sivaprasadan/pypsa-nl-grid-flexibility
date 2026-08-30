@@ -31,7 +31,6 @@ from pypsa_nl_grid_flexibility.config import (
     TABLE_DIR,
 )
 
-
 README_RESULTS_START = "<!-- LATEST_RESULTS_START -->"
 README_RESULTS_END = "<!-- LATEST_RESULTS_END -->"
 

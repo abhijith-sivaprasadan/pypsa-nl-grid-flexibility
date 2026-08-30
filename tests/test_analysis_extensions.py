@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-import pandas as pd
 from types import SimpleNamespace
+
+import pandas as pd
 
 from pypsa_nl_grid_flexibility.analysis import (
     calculate_bottleneck_diagnostics,
-    calculate_summary,
     calculate_n1_security_proxy,
+    calculate_summary,
     validate_scenario_summary,
 )
 from pypsa_nl_grid_flexibility.bess_siting import add_bess_business_case_metrics

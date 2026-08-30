@@ -5,14 +5,6 @@ import warnings
 
 import pandas as pd
 
-from pypsa_nl_grid_flexibility.config import (
-    TABLE_DIR,
-    ensure_output_dirs,
-    load_model_config,
-    load_scenarios,
-)
-from pypsa_nl_grid_flexibility.profiles import generate_profiles
-from pypsa_nl_grid_flexibility.network import build_network, optimise_network
 from pypsa_nl_grid_flexibility.analysis import (
     add_baseline_comparison,
     calculate_bottleneck_diagnostics,
@@ -25,13 +17,21 @@ from pypsa_nl_grid_flexibility.bess_siting import (
     add_bess_business_case_metrics,
     run_bess_siting_and_sizing_sweep,
 )
+from pypsa_nl_grid_flexibility.config import (
+    TABLE_DIR,
+    ensure_output_dirs,
+    load_model_config,
+    load_scenarios,
+)
+from pypsa_nl_grid_flexibility.network import build_network, optimise_network
 from pypsa_nl_grid_flexibility.plotting import plot_bess_sweep, plot_summary
+from pypsa_nl_grid_flexibility.profiles import generate_profiles
 from pypsa_nl_grid_flexibility.reporting import (
-    write_pdf_report,
     update_readme_latest_results,
     write_executive_report,
-    write_report_bundle,
+    write_pdf_report,
     write_portfolio_summary,
+    write_report_bundle,
 )
 
 
