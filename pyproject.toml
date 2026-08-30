@@ -8,6 +8,19 @@ version = "0.1.0"
 description = "Reproducible PyPSA framework for grid-congestion and flexibility screening"
 requires-python = ">=3.10"
 authors = [{name = "Abhijith Sivaprasadan"}]
+dependencies = [
+    "pypsa>=0.30",
+    "linopy>=0.3",
+    "highspy>=1.5",
+    "pandas>=2.0",
+    "numpy>=1.24",
+    "matplotlib>=3.7",
+    "pyyaml>=6.0",
+    "streamlit>=1.30",
+    "plotly>=5.18",
+    "reportlab>=4.0",
+    "pypdf>=4.0",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]
