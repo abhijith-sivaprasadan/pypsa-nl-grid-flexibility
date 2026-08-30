@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using this metadata."
+title: "PyPSA-NL Grid Flexibility Modelling Platform"
+type: software
+authors:
+  - family-names: Sivaprasadan
+    given-names: Abhijith
+repository-code: "https://github.com/abhijith-sivaprasadan/pypsa-nl-grid-flexibility"
+license: MIT
+

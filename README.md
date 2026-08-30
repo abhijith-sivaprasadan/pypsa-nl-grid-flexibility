@@ -6,7 +6,7 @@
 
 Netherlands-inspired power-system modelling project for grid congestion, renewable curtailment, BESS siting, flexible connection contracts and reinforcement screening.
 
-The repository is built as a transparent portfolio-grade workflow for Grid Flow Modeller, Energy Systems Modeller and flexibility analytics roles. It uses PyPSA to solve simplified constrained-grid dispatch scenarios, then turns the solved network results into decision-support KPIs, validation checks, plots and reports.
+The repository is a transparent, reproducible workflow for screening grid-flexibility options. It uses PyPSA to solve simplified constrained-grid dispatch scenarios, then turns solved-network results into decision-support KPIs, automated model-output consistency checks, plots and reports.
 
 This is not a TSO-grade Dutch grid model. The demand and renewable-capacity scale are calibrated from public Dutch statistics where appropriate, while topology, line ratings and hourly profile shapes remain documented modelling assumptions.
 
