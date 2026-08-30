@@ -31,7 +31,8 @@ def test_lossless_battery_preserves_energy_over_two_periods():
     network = pypsa.Network()
     network.set_snapshots(pd.date_range("2026-01-01", periods=2, freq="h"))
     network.add("Bus", "bus")
-    network.add("Generator", "supply", bus="bus", p_nom=100, marginal_cost=[1, 100])
+    network.add("Generator", "supply", bus="bus", p_nom=100, marginal_cost=1)
+    network.generators_t.marginal_cost["supply"] = [1, 100]
     network.add("Load", "demand", bus="bus", p_set=[0, 50])
     network.add(
         "StorageUnit",
