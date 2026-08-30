@@ -17,3 +17,11 @@ The default is 168 snapshots with synthetic profiles/topology assumptions.
 Public-data annual benchmarks, exact environment locks, true contingency
 evaluation and archived release bundles remain separate gates. No reference
 result is updated merely because these tests were added.
+
+On 2026-08-30, a clean worktree at `2207cd65` ran the complete existing workflow:
+nine main scenarios, the 72-case BESS siting/sizing sweep, reports, and all eight
+consistency checks. All eight generated CSV tables were byte-for-byte unchanged
+from the committed reference. Rendered PDF/figure files were regenerated but are
+not asserted byte-reproducible. This is the one-week synthetic workflow, not an
+annual or externally validated benchmark. A reporting regression also ensures
+regeneration retains the wording "automated consistency checks".
