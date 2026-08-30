@@ -82,7 +82,9 @@ def test_summary_does_not_double_count_total_curtailment() -> None:
     network = SimpleNamespace(
         snapshots=snapshots,
         generators=generators,
-        generators_t=SimpleNamespace(p=generator_dispatch, p_max_pu=generator_availability),
+        generators_t=SimpleNamespace(
+            p=generator_dispatch, p_max_pu=generator_availability
+        ),
         loads=pd.DataFrame(index=["load_A"]),
         loads_t=SimpleNamespace(p_set=load),
         lines=pd.DataFrame({"s_nom": []}),

@@ -3,12 +3,6 @@ from __future__ import annotations
 import logging
 import warnings
 
-warnings.filterwarnings(
-    "ignore",
-    category=FutureWarning,
-    module=r"google\.api_core\._python_version_support",
-)
-
 import pandas as pd
 
 from pypsa_nl_grid_flexibility.config import (
@@ -43,6 +37,11 @@ from pypsa_nl_grid_flexibility.reporting import (
 
 def configure_logging() -> None:
     """Keep routine runs focused on project outputs instead of solver internals."""
+    warnings.filterwarnings(
+        "ignore",
+        category=FutureWarning,
+        module=r"google\.api_core\._python_version_support",
+    )
     logging.basicConfig(level=logging.WARNING)
     for logger_name in ("linopy", "pypsa", "pypsa.optimization"):
         logging.getLogger(logger_name).setLevel(logging.WARNING)

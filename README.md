@@ -19,7 +19,7 @@ This is not a TSO-grade Dutch grid model. The demand and renewable-capacity scal
 - Grid-reinforcement scenario screening
 - Bottleneck and N-1 screening proxy from solved line flows
 - Congestion-cost proxy combining curtailment value, backup cost and line-hour penalties
-- Automated KPI validation before reporting
+- Automated model-output consistency checks before reporting
 - Streamlit dashboard, CSV outputs, figures and executive markdown reports
 
 ## Model Scope
@@ -31,7 +31,7 @@ Current calibration assumptions are documented in `config/model_config.yaml`:
 - National electricity demand scale: approximately 116 TWh per year, based on public Dutch statistics.
 - Renewable capacity totals: CBS StatLine public figures for solar PV, onshore wind and offshore wind.
 - Provincial renewable distribution: public provincial installed-capacity shares, scaled to selected national totals.
-- Grid topology and corridor ratings: simplified portfolio assumptions for congestion-screening demonstration.
+- Grid topology and corridor ratings: synthetic assumptions for congestion-screening demonstration.
 
 ## Scenario Workflow
 
@@ -46,7 +46,7 @@ The workflow:
 1. Builds the configured scenario networks.
 2. Solves each PyPSA optimisation with HiGHS.
 3. Exports hourly dispatch and scenario KPI tables.
-4. Validates KPI consistency and solve status.
+4. Checks KPI consistency and solve status.
 5. Runs the BESS siting and sizing sweep.
 6. Generates plots and markdown reports.
 
@@ -80,7 +80,7 @@ outputs/reports/portfolio_summary.md
 outputs/reports/pypsa_nl_grid_flexibility_report_bundle.zip
 ```
 
-`validation_summary.csv` is intended as a quick audit trail. It checks:
+`validation_summary.csv` is retained as a backward-compatible filename. It contains automated model-output consistency checks, not independent external validation. It checks:
 
 - all scenarios solved with PyPSA status `ok` and optimal termination,
 - renewable curtailment equals renewable availability minus renewable dispatch,
@@ -114,7 +114,7 @@ The dashboard also exposes the generated PDF report and the full ZIP bundle for 
 - Absolute curtailment is **higher** than base by **170,594 MWh**, so the ranking should be read as a multi-KPI trade-off rather than a curtailment-only result.
 - Base case curtailment is **484,638 MWh** at **24.4%**.
 - Best BESS sweep option: **Groningen 400 MW / 4 h**, with score **8.9**.
-- Validation checks passed: **8/8**.
+- Automated consistency checks passed: **8/8**.
 
 <!-- LATEST_RESULTS_END -->
 
@@ -162,17 +162,6 @@ outputs/                        Generated tables, figures and reports
 scripts/                        Optional helper scripts
 ```
 
-## Professional Use Case
-
-This project is designed to demonstrate an end-to-end modelling workflow:
-
-- convert transparent assumptions into a solvable network model,
-- run scenario and sensitivity studies,
-- diagnose congestion and curtailment,
-- compare flexibility interventions,
-- validate outputs before interpretation,
-- communicate results through tables, plots, dashboards and concise reports.
-
 ## Limitations
 
 - The network is a simplified Netherlands-inspired topology, not a validated transmission model.
@@ -180,9 +169,3 @@ This project is designed to demonstrate an end-to-end modelling workflow:
 - The congestion-cost proxy is not an LMP, redispatch settlement price or formal market-clearing result.
 - BESS business-case outputs are screening proxies and do not include full revenue stacking, degradation, imbalance market behaviour or financing detail.
 - Results should be read as scenario-screening evidence, not as operational grid-planning advice.
-
-## CV Summary
-
-**PyPSA-NL Grid Flexibility Modelling Platform | Python, PyPSA, pandas, Streamlit**
-
-Built a Netherlands-inspired grid-flexibility modelling workflow to analyse renewable curtailment, congestion, backup dispatch, BESS siting/sizing, flexible connection logic and grid reinforcement scenarios. Developed reproducible PyPSA scenario runs, KPI validation, congestion-cost proxy metrics, BESS ranking, bottleneck screening, Streamlit dashboard outputs and executive reporting for decision-support communication.

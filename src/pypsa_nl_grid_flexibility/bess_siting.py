@@ -218,8 +218,7 @@ def run_bess_siting_and_sizing_sweep(
         )
 
         scenario_name = (
-            f"bess_sweep__{region}__{float(power_mw):.0f}MW__"
-            f"{float(duration_h):.0f}h"
+            f"bess_sweep__{region}__{float(power_mw):.0f}MW__{float(duration_h):.0f}h"
         )
 
         network = build_network(
@@ -301,9 +300,9 @@ def add_bess_business_case_metrics(
     annualisation_factor = 8760.0 / snapshots if snapshots else 1.0
 
     if discount_rate:
-        capital_recovery_factor = (
-            discount_rate * (1 + discount_rate) ** lifetime
-        ) / ((1 + discount_rate) ** lifetime - 1)
+        capital_recovery_factor = (discount_rate * (1 + discount_rate) ** lifetime) / (
+            (1 + discount_rate) ** lifetime - 1
+        )
     else:
         capital_recovery_factor = 1.0 / lifetime
 
@@ -336,12 +335,9 @@ def add_bess_business_case_metrics(
         data["annualised_congestion_value_eur_per_year"]
         / data["annualised_total_cost_eur_per_year"].replace(0, pd.NA)
     ).fillna(0.0)
-    data["simple_payback_years_proxy"] = (
-        data["bess_capex_eur"]
-        / data["annualised_congestion_value_eur_per_year"].where(
-            data["annualised_congestion_value_eur_per_year"] > 0
-        )
-    )
+    data["simple_payback_years_proxy"] = data["bess_capex_eur"] / data[
+        "annualised_congestion_value_eur_per_year"
+    ].where(data["annualised_congestion_value_eur_per_year"] > 0)
 
     return data.sort_values(
         ["net_annual_value_proxy_eur_per_year", "benefit_cost_ratio_proxy"],

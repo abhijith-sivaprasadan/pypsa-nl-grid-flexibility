@@ -24,7 +24,12 @@ from reportlab.platypus import (
     Spacer,
 )
 
-from pypsa_nl_grid_flexibility.config import FIGURE_DIR, PROJECT_ROOT, REPORT_DIR, TABLE_DIR
+from pypsa_nl_grid_flexibility.config import (
+    FIGURE_DIR,
+    PROJECT_ROOT,
+    REPORT_DIR,
+    TABLE_DIR,
+)
 
 
 README_RESULTS_START = "<!-- LATEST_RESULTS_START -->"
@@ -113,7 +118,9 @@ def _clean_pdf_text(value: object) -> str:
 def _pdf_table(df: pd.DataFrame, rename_map: dict[str, str]) -> pd.DataFrame:
     if df.empty:
         return df.copy()
-    return df.rename(columns={src: dst for src, dst in rename_map.items() if src in df.columns})
+    return df.rename(
+        columns={src: dst for src, dst in rename_map.items() if src in df.columns}
+    )
 
 
 def _load_csv_if_exists(path: Path) -> pd.DataFrame:
@@ -200,7 +207,12 @@ def _make_longtable(
         [
             ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#0f172a")),
             ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-            ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#f3f4f6")]),
+            (
+                "ROWBACKGROUNDS",
+                (0, 1),
+                (-1, -1),
+                [colors.white, colors.HexColor("#f3f4f6")],
+            ),
             ("GRID", (0, 0), (-1, -1), 0.25, colors.HexColor("#cbd5e1")),
             ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
             ("VALIGN", (0, 0), (-1, -1), "TOP"),
@@ -213,14 +225,19 @@ def _make_longtable(
 
     output: list[object] = []
     if title is not None:
-        output.append(Paragraph(title, ParagraphStyle(
-            "pdf_table_title",
-            parent=styles["Heading3"],
-            fontName="Helvetica-Bold",
-            fontSize=11,
-            leading=13,
-            spaceAfter=6,
-        )))
+        output.append(
+            Paragraph(
+                title,
+                ParagraphStyle(
+                    "pdf_table_title",
+                    parent=styles["Heading3"],
+                    fontName="Helvetica-Bold",
+                    fontSize=11,
+                    leading=13,
+                    spaceAfter=6,
+                ),
+            )
+        )
     output.append(table)
     output.append(Spacer(1, 0.15 * inch))
     return output
@@ -317,7 +334,9 @@ def build_dynamic_findings(
     base = base_rows.iloc[0] if not base_rows.empty else None
     top_bess_rows = _non_reference_bess(bess_summary)
     top_bess = top_bess_rows.iloc[0] if not top_bess_rows.empty else None
-    validation_passed, validation_total, validation_failed = _validation_counts(validation)
+    validation_passed, validation_total, validation_failed = _validation_counts(
+        validation
+    )
 
     curtailment_delta = best.get("absolute_curtailment_change_vs_base_mwh", 0.0)
     curtailment_direction = "higher" if curtailment_delta > 0 else "lower or equal"
@@ -664,8 +683,12 @@ def build_pdf_report_bytes(
                         "Base curtailment [MWh]": base.get("renewable_curtailment_mwh"),
                         "Base curtailment rate [%]": base.get("curtailment_rate_pct"),
                         "Base backup [MWh]": base.get("backup_dispatch_mwh"),
-                        "Base congestion cost proxy [EUR]": base.get("total_congestion_cost_proxy_eur"),
-                        "Base renewable share [%]": base.get("renewable_share_of_demand_pct"),
+                        "Base congestion cost proxy [EUR]": base.get(
+                            "total_congestion_cost_proxy_eur"
+                        ),
+                        "Base renewable share [%]": base.get(
+                            "renewable_share_of_demand_pct"
+                        ),
                     }
                 ]
             )
@@ -680,7 +703,11 @@ def build_pdf_report_bytes(
 
     if validation is not None and not validation.empty:
         validation_view = validation[
-            [col for col in ["check", "passed", "value", "tolerance", "details"] if col in validation.columns]
+            [
+                col
+                for col in ["check", "passed", "value", "tolerance", "details"]
+                if col in validation.columns
+            ]
         ].copy()
         validation_view = _pdf_table(
             validation_view,
@@ -710,7 +737,9 @@ def build_pdf_report_bytes(
     if bess_summary is not None and not bess_summary.empty:
         bess_view = bess_summary.copy()
         if "scenario" in bess_view.columns:
-            bess_view = bess_view[bess_view["scenario"] != "bess_sweep_reference_no_bess"].copy()
+            bess_view = bess_view[
+                bess_view["scenario"] != "bess_sweep_reference_no_bess"
+            ].copy()
         if not bess_view.empty:
             bess_view = bess_view.sort_values(
                 "sweep_grid_value_score",
@@ -725,9 +754,9 @@ def build_pdf_report_bytes(
                     "bess_energy_mwh",
                     "sweep_grid_value_score",
                     "renewable_dispatch_gain_mwh",
-                "backup_reduction_mwh",
-                "congestion_cost_reduction_eur",
-            ]
+                    "backup_reduction_mwh",
+                    "congestion_cost_reduction_eur",
+                ]
                 if c in bess_view.columns
             ]
             bess_table = _pdf_table(
@@ -801,9 +830,9 @@ def build_pdf_report_bytes(
             if c in n1_security.columns
         ]
         n1_table = _pdf_table(
-            n1_security.sort_values("n1_screening_risk_score", ascending=False).head(12)[
-                n1_cols
-            ],
+            n1_security.sort_values("n1_screening_risk_score", ascending=False).head(
+                12
+            )[n1_cols],
             {
                 "scenario": "Scenario",
                 "outaged_line": "Outaged line",
@@ -868,7 +897,8 @@ def build_pdf_report_bytes(
     figure_paths = [
         path
         for path in sorted(FIGURE_DIR.glob("*.png"))
-        if path.name not in {"scenario_grid_value_score.png", "top_bottleneck_line_utilisation.png"}
+        if path.name
+        not in {"scenario_grid_value_score.png", "top_bottleneck_line_utilisation.png"}
     ]
     for figure_path in figure_paths:
         title = figure_path.stem.replace("_", " ").title()
@@ -1169,4 +1199,3 @@ def write_markdown_report(
     validation: pd.DataFrame | None = None,
 ) -> None:
     write_executive_report(summary, bess_summary, validation)
-

@@ -255,7 +255,9 @@ def validate_scenario_summary(
         "renewable_available_mwh - renewable_dispatch_mwh equals renewable_curtailment_mwh.",
     )
 
-    renewable_share_max = float(summary["renewable_share_of_demand_pct"].max(skipna=True))
+    renewable_share_max = float(
+        summary["renewable_share_of_demand_pct"].max(skipna=True)
+    )
     add_check(
         "renewable_share_not_above_100_pct",
         renewable_share_max <= 100.0 + 1e-9,

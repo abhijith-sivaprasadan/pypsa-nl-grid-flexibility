@@ -19,11 +19,20 @@ def test_pdf_report_bytes_include_pdf_and_attachment(tmp_path, monkeypatch) -> N
     raw_dir = project_root / "data" / "raw"
     processed_dir = project_root / "data" / "processed"
 
-    for path in [tables_dir, figures_dir, reports_dir, config_dir, raw_dir, processed_dir]:
+    for path in [
+        tables_dir,
+        figures_dir,
+        reports_dir,
+        config_dir,
+        raw_dir,
+        processed_dir,
+    ]:
         path.mkdir(parents=True, exist_ok=True)
 
     (project_root / "README.md").write_text("README", encoding="utf-8")
-    (project_root / "pyproject.toml").write_text("[project]\nname = 'demo'\n", encoding="utf-8")
+    (project_root / "pyproject.toml").write_text(
+        "[project]\nname = 'demo'\n", encoding="utf-8"
+    )
     (project_root / "requirements.txt").write_text("pandas\n", encoding="utf-8")
     (config_dir / "model_config.yaml").write_text("model: {}\n", encoding="utf-8")
     (config_dir / "scenarios.yaml").write_text("scenarios: {}\n", encoding="utf-8")
@@ -130,7 +139,9 @@ def test_pdf_report_bytes_include_pdf_and_attachment(tmp_path, monkeypatch) -> N
     bottleneck.to_csv(tables_dir / "bottleneck_diagnostics.csv", index=False)
     n1.to_csv(tables_dir / "n1_security_proxy.csv", index=False)
     business.to_csv(tables_dir / "bess_business_case.csv", index=False)
-    (reports_dir / "executive_grid_flexibility_report.md").write_text("Executive", encoding="utf-8")
+    (reports_dir / "executive_grid_flexibility_report.md").write_text(
+        "Executive", encoding="utf-8"
+    )
     (reports_dir / "portfolio_summary.md").write_text("Portfolio", encoding="utf-8")
     (reports_dir / "scenario_report.md").write_text("Scenario", encoding="utf-8")
     (reports_dir / "bess_siting_report.md").write_text("BESS", encoding="utf-8")

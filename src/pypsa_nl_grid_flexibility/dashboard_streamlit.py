@@ -439,7 +439,9 @@ with tab1:
     if not validation.empty and "passed" in validation.columns:
         validation_passed = int(validation["passed"].sum())
         validation_total = len(validation)
-        st.info(f"Validation status: {validation_passed}/{validation_total} checks passed.")
+        st.info(
+            f"Validation status: {validation_passed}/{validation_total} checks passed."
+        )
 
     display_cols = [
         "recommendation_rank",
@@ -676,7 +678,9 @@ with tab3:
     )
 
     if bottlenecks.empty:
-        st.info("Bottleneck diagnostics are not available. Run the model pipeline first.")
+        st.info(
+            "Bottleneck diagnostics are not available. Run the model pipeline first."
+        )
     else:
         bottleneck_scenario = st.selectbox(
             "Bottleneck scenario",
@@ -1065,7 +1069,9 @@ with tab6:
     st.subheader("Validation and report exports")
 
     if validation.empty:
-        st.warning("No validation summary found. Run the model workflow to generate validation_summary.csv.")
+        st.warning(
+            "No validation summary found. Run the model workflow to generate validation_summary.csv."
+        )
     else:
         passed = int(validation["passed"].sum()) if "passed" in validation else 0
         total = len(validation)
