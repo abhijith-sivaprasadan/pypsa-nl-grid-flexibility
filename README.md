@@ -174,6 +174,6 @@ scripts/                        Optional helper scripts
 <!-- ci-workflow-coverage -->
 ## Continuous integration
 
-[![CI](https://github.com/abhijith-sivaprasadan/pypsa-nl-grid-flexibility/actions/workflows/python-package.yml/badge.svg?branch=codex%2Fci-publication)](https://github.com/abhijith-sivaprasadan/pypsa-nl-grid-flexibility/actions/workflows/python-package.yml)
+[![CI](https://github.com/abhijith-sivaprasadan/pypsa-nl-grid-flexibility/actions/workflows/python-package.yml/badge.svg?branch=main)](https://github.com/abhijith-sivaprasadan/pypsa-nl-grid-flexibility/actions/workflows/python-package.yml)
 
-See [CI coverage and limitations](CI.md) for the automated checks. The status badge tracks the published CI review branch.
+See [CI coverage and limitations](CI.md) for the automated checks. The status badge tracks the default branch.
