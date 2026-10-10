@@ -169,3 +169,11 @@ scripts/                        Optional helper scripts
 - The congestion-cost proxy is not an LMP, redispatch settlement price or formal market-clearing result.
 - BESS business-case outputs are screening proxies and do not include full revenue stacking, degradation, imbalance market behaviour or financing detail.
 - Results should be read as scenario-screening evidence, not as operational grid-planning advice.
+
+
+<!-- ci-workflow-coverage -->
+## Continuous integration
+
+[![CI](https://github.com/abhijith-sivaprasadan/pypsa-nl-grid-flexibility/actions/workflows/python-package.yml/badge.svg?branch=codex%2Fci-publication)](https://github.com/abhijith-sivaprasadan/pypsa-nl-grid-flexibility/actions/workflows/python-package.yml)
+
+See [CI coverage and limitations](CI.md) for the automated checks. The status badge tracks the published CI review branch.
