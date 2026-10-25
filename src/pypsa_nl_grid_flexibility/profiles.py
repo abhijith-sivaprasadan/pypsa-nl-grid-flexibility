@@ -50,7 +50,9 @@ def load_real_profiles(model_config: dict) -> pd.DataFrame | None:
     raw = pd.read_csv(raw_path)
     if "utc_timestamp" not in raw:
         raise ValueError("OPSD source needs utc_timestamp")
-    raw["utc_timestamp"] = pd.to_datetime(raw["utc_timestamp"], utc=True, errors="raise")
+    raw["utc_timestamp"] = pd.to_datetime(
+        raw["utc_timestamp"], utc=True, errors="raise"
+    )
     if raw["utc_timestamp"].duplicated().any():
         raise ValueError("Duplicate UTC timestamp in OPSD source")
     raw = raw.set_index("utc_timestamp").sort_index()
@@ -71,9 +73,11 @@ def load_real_profiles(model_config: dict) -> pd.DataFrame | None:
 
     # Match exact model hour identities in UTC; never use the first N source
     # rows, which silently switches the study year with a multi-year OPSD CSV.
-    utc_snapshots = pd.DatetimeIndex(snapshots).tz_localize("UTC") if (
-        snapshots.tz is None
-    ) else snapshots.tz_convert("UTC")
+    utc_snapshots = (
+        pd.DatetimeIndex(snapshots).tz_localize("UTC")
+        if (snapshots.tz is None)
+        else snapshots.tz_convert("UTC")
+    )
     if len(utc_snapshots) != len(set(utc_snapshots)):
         raise ValueError("Non-unique target snapshots")
     if not utc_snapshots.isin(raw.index).all():
@@ -214,7 +218,9 @@ def congestion_window_mask(
     return (solar_condition & demand_condition) | wind_condition
 
 
-def first_complete_opsd_window(raw_path, *, year: int, hours: int = 168) -> pd.Timestamp:
+def first_complete_opsd_window(
+    raw_path, *, year: int, hours: int = 168
+) -> pd.Timestamp:
     """Earliest gap-free UTC window with all four Dutch observed channels.
 
     Selection uses ONLY source coverage, never simulated outcomes. Missing
