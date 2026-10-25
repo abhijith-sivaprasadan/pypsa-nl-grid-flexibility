@@ -15,7 +15,11 @@ from pathlib import Path
 import pandas as pd
 
 from pypsa_nl_grid_flexibility.analysis import calculate_summary
-from pypsa_nl_grid_flexibility.config import PROJECT_ROOT, load_model_config, load_scenarios
+from pypsa_nl_grid_flexibility.config import (
+    PROJECT_ROOT,
+    load_model_config,
+    load_scenarios,
+)
 from pypsa_nl_grid_flexibility.network import build_network, optimise_network
 from pypsa_nl_grid_flexibility.profiles import (
     first_complete_opsd_window,
