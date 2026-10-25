@@ -37,16 +37,22 @@ def audit_counterfactual_comparability(
             raise ValueError("Missing or duplicate scenario")
         if row.get("solve_status") != "ok" or row.get("termination_condition") != "optimal":
             raise ValueError("Non-optimal scenario must not be published as a result")
-        for name, expected in (
+        balance_pairs = [
             (
                 "renewable_available_mwh",
                 _num(row, "renewable_dispatch_mwh") + _num(row, "renewable_curtailment_mwh"),
             ),
-            (
-                "total_demand_mwh",
-                _num(row, "renewable_dispatch_mwh") + _num(row, "backup_dispatch_mwh"),
-            ),
-        ):
+        ]
+        # Storage losses/charge/discharge also enter the hourly energy balance.
+        # Dispatch + backup equals load directly only with inactive BESS.
+        if _num(row, "bess_throughput_mwh") < 1e-8:
+            balance_pairs.append(
+                (
+                    "total_demand_mwh",
+                    _num(row, "renewable_dispatch_mwh") + _num(row, "backup_dispatch_mwh"),
+                )
+            )
+        for name, expected in balance_pairs:
             actual = _num(row, name)
             if not math.isclose(actual, expected, rel_tol=1e-9, abs_tol=1e-4):
                 raise ValueError(f"Physical KPI identity fails: {case}/{name}")
