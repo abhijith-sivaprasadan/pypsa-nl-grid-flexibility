@@ -35,12 +35,16 @@ def audit_counterfactual_comparability(
         case = row.get("scenario")
         if not case or case in cases:
             raise ValueError("Missing or duplicate scenario")
-        if row.get("solve_status") != "ok" or row.get("termination_condition") != "optimal":
+        if (
+            row.get("solve_status") != "ok"
+            or row.get("termination_condition") != "optimal"
+        ):
             raise ValueError("Non-optimal scenario must not be published as a result")
         balance_pairs = [
             (
                 "renewable_available_mwh",
-                _num(row, "renewable_dispatch_mwh") + _num(row, "renewable_curtailment_mwh"),
+                _num(row, "renewable_dispatch_mwh")
+                + _num(row, "renewable_curtailment_mwh"),
             ),
         ]
         # Storage losses/charge/discharge also enter the hourly energy balance.
@@ -49,7 +53,8 @@ def audit_counterfactual_comparability(
             balance_pairs.append(
                 (
                     "total_demand_mwh",
-                    _num(row, "renewable_dispatch_mwh") + _num(row, "backup_dispatch_mwh"),
+                    _num(row, "renewable_dispatch_mwh")
+                    + _num(row, "backup_dispatch_mwh"),
                 )
             )
         for name, expected in balance_pairs:
