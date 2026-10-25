@@ -212,3 +212,36 @@ def congestion_window_mask(
         wind_condition = pd.Series(False, index=profiles.index)
 
     return (solar_condition & demand_condition) | wind_condition
+
+
+def first_complete_opsd_window(raw_path, *, year: int, hours: int = 168) -> pd.Timestamp:
+    """Earliest gap-free UTC window with all four Dutch observed channels.
+
+    Selection uses ONLY source coverage, never simulated outcomes. Missing
+    hours are not interpolated. One week is not a representative year.
+    """
+    required = [
+        "NL_load_actual_entsoe_transparency",
+        "NL_solar_generation_actual",
+        "NL_wind_onshore_generation_actual",
+        "NL_wind_offshore_generation_actual",
+    ]
+    if type(year) is not int or not 2015 <= year <= 2020 or hours < 1:
+        raise ValueError("Invalid OPSD release year or window length")
+    data = pd.read_csv(raw_path, usecols=["utc_timestamp", *required])
+    idx = pd.to_datetime(data["utc_timestamp"], utc=True, errors="raise")
+    if idx.duplicated().any():
+        raise ValueError("Duplicate OPSD UTC hours")
+    data.index = idx
+    whole_year = pd.date_range(
+        f"{year}-01-01", f"{year + 1}-01-01", freq="h", inclusive="left", tz="UTC"
+    )
+    values = data.reindex(whole_year)[required].apply(pd.to_numeric, errors="coerce")
+    finite = pd.Series(np.isfinite(values.to_numpy()).all(axis=1), index=whole_year)
+    usable = finite & values.ge(0).all(axis=1) & values.gt(0).any(axis=1)
+    full = usable.rolling(hours, min_periods=hours).sum().eq(hours)
+    if not full.any():
+        raise ValueError(
+            f"No complete {hours}h observed Dutch load/generation window in {year}"
+        )
+    return full[full].index[0] - pd.Timedelta(hours=hours - 1)
