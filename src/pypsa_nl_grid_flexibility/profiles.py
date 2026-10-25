@@ -42,16 +42,25 @@ def load_real_profiles(model_config: dict) -> pd.DataFrame | None:
         "data/raw/opsd_time_series_60min_singleindex.csv",
     )
     if not raw_path.exists():
-        return None
+        raise FileNotFoundError(
+            f"OPSD profile_source requested, but the required file is absent: {raw_path}"
+        )
 
     snapshots = create_snapshots(model_config)
-    raw = pd.read_csv(raw_path, parse_dates=["utc_timestamp"])
+    raw = pd.read_csv(raw_path)
+    if "utc_timestamp" not in raw:
+        raise ValueError("OPSD source needs utc_timestamp")
+    raw["utc_timestamp"] = pd.to_datetime(
+        raw["utc_timestamp"], utc=True, errors="raise"
+    )
+    if raw["utc_timestamp"].duplicated().any():
+        raise ValueError("Duplicate UTC timestamp in OPSD source")
     raw = raw.set_index("utc_timestamp").sort_index()
 
     required_columns = {
         "demand_pu": "NL_load_actual_entsoe_transparency",
         "solar_pu": "NL_solar_generation_actual",
-        "wind_pu": "NL_wind_generation_actual",
+        "wind_pu": "NL_wind_onshore_generation_actual",
         "offshore_wind_pu": "NL_wind_offshore_generation_actual",
     }
 
@@ -62,15 +71,26 @@ def load_real_profiles(model_config: dict) -> pd.DataFrame | None:
             + ", ".join(missing)
         )
 
-    window = raw.iloc[: len(snapshots)].copy()
-    if len(window) < len(snapshots):
-        raise ValueError(
-            f"Real profile CSV has {len(window)} rows, but "
-            f"{len(snapshots)} snapshots are required."
-        )
-
+    # Match exact model hour identities in UTC; never use the first N source
+    # rows, which silently switches the study year with a multi-year OPSD CSV.
+    utc_snapshots = (
+        pd.DatetimeIndex(snapshots).tz_localize("UTC")
+        if (snapshots.tz is None)
+        else snapshots.tz_convert("UTC")
+    )
+    if len(utc_snapshots) != len(set(utc_snapshots)):
+        raise ValueError("Non-unique target snapshots")
+    if not utc_snapshots.isin(raw.index).all():
+        missing = utc_snapshots[~utc_snapshots.isin(raw.index)]
+        raise ValueError(f"OPSD lacks exact requested UTC hours: {missing[0]}")
+    window = raw.loc[utc_snapshots, list(required_columns.values())]
+    numeric = window.apply(pd.to_numeric, errors="raise")
+    if numeric.isna().any().any() or not np.isfinite(numeric.to_numpy()).all():
+        raise ValueError("OPSD missing/nonfinite hours; no silent interpolation")
+    if (numeric < 0).any().any() or (numeric.max() <= 0).any():
+        raise ValueError("Invalid nonnegative generation/load profile boundary")
     profiles = {
-        out_col: _normalise_profile(window[in_col]).to_numpy()
+        out_col: (numeric[in_col] / numeric[in_col].max()).to_numpy()
         for out_col, in_col in required_columns.items()
     }
     return pd.DataFrame(profiles, index=snapshots)
@@ -196,3 +216,39 @@ def congestion_window_mask(
         wind_condition = pd.Series(False, index=profiles.index)
 
     return (solar_condition & demand_condition) | wind_condition
+
+
+def first_complete_opsd_window(
+    raw_path, *, year: int, hours: int = 168
+) -> pd.Timestamp:
+    """Earliest gap-free UTC window with all four Dutch observed channels.
+
+    Selection uses ONLY source coverage, never simulated outcomes. Missing
+    hours are not interpolated. One week is not a representative year.
+    """
+    required = [
+        "NL_load_actual_entsoe_transparency",
+        "NL_solar_generation_actual",
+        "NL_wind_onshore_generation_actual",
+        "NL_wind_offshore_generation_actual",
+    ]
+    if type(year) is not int or not 2015 <= year <= 2020 or hours < 1:
+        raise ValueError("Invalid OPSD release year or window length")
+    data = pd.read_csv(raw_path, usecols=["utc_timestamp", *required])
+    idx = pd.to_datetime(data["utc_timestamp"], utc=True, errors="raise")
+    if idx.duplicated().any():
+        raise ValueError("Duplicate OPSD UTC hours")
+    data.index = idx
+    whole_year = pd.date_range(
+        f"{year}-01-01", f"{year + 1}-01-01", freq="h", inclusive="left", tz="UTC"
+    )
+    values = data.reindex(whole_year)[required].apply(pd.to_numeric, errors="coerce")
+    finite = pd.Series(np.isfinite(values.to_numpy()).all(axis=1), index=whole_year)
+    usable = finite & values.ge(0).all(axis=1) & values.gt(0).any(axis=1)
+    full = usable.rolling(hours, min_periods=hours).sum().eq(hours)
+    full &= values.gt(0).rolling(hours, min_periods=hours).sum().ge(1).all(axis=1)
+    if not full.any():
+        raise ValueError(
+            f"No complete {hours}h observed Dutch load/generation window in {year}"
+        )
+    return full[full].index[0] - pd.Timedelta(hours=hours - 1)
