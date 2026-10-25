@@ -17,7 +17,10 @@ import pandas as pd
 from pypsa_nl_grid_flexibility.analysis import calculate_summary
 from pypsa_nl_grid_flexibility.config import PROJECT_ROOT, load_model_config, load_scenarios
 from pypsa_nl_grid_flexibility.network import build_network, optimise_network
-from pypsa_nl_grid_flexibility.profiles import generate_profiles
+from pypsa_nl_grid_flexibility.profiles import (
+    first_complete_opsd_window,
+    generate_profiles,
+)
 
 SCENARIOS = ("base_2026_constrained_grid", "high_wind_offshore_growth")
 LINE_FACTORS = (0.75, 1.0, 1.25)
@@ -31,11 +34,11 @@ def registered_grid() -> list[tuple[str, float]]:
     return [(scenario, f) for scenario in SCENARIOS for f in LINE_FACTORS]
 
 
-def build_study_config(base: dict, path: str) -> dict:
+def build_study_config(base: dict, path: str, start: str = '2019-01-01 00:00') -> dict:
     updated = deepcopy(base)
     updated["model"].update(
         {
-            "start": "2019-01-01 00:00",
+            "start": start,
             "snapshots": 168,
             "profile_source": "opsd",
             "real_profile_csv": path,
@@ -51,7 +54,8 @@ def run(raw_file: Path, out_dir: Path) -> None:
     base = load_model_config()
     # Path is relative to PROJECT_ROOT to be consumed by the existing loader.
     rel = raw_file.resolve().relative_to(PROJECT_ROOT.resolve())
-    config = build_study_config(base, str(rel))
+    selected = first_complete_opsd_window(raw_file, year=2019, hours=168)
+    config = build_study_config(base, str(rel), start=selected.strftime("%Y-%m-%d %H:%M"))
     profiles = generate_profiles(config)  # Raises on missing or wrong 2019 hours.
     original = load_scenarios()
     records = []
@@ -72,6 +76,7 @@ def run(raw_file: Path, out_dir: Path) -> None:
         "source_bytes": raw_file.stat().st_size,
         "source_product_version": "2020-10-06",
         "observed_shape_year": 2019,
+        "selection_rule": "earliest fully observed contiguous 168 UTC hours in 2019",
         "source_hour_start_utc": str(profiles.index[0]) + " UTC",
         "source_hour_end_utc": str(profiles.index[-1]) + " UTC",
         "source_rows_admitted": len(profiles),
@@ -82,10 +87,10 @@ def run(raw_file: Path, out_dir: Path) -> None:
             "Synthetic provincial network/corridors/line ratings have not been validated.",
             "Regional load allocation and 2024 capacity remain stylised.",
             "No security-constrained N-1 or market price inference.",
-            "No exact annual comparison: the horizon covers 168 UTC hours.",
+            "No annual comparison: the horizon covers the first complete 168 UTC hours.",
         ],
     }
-    (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\\n")
+    (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
 
 
 if __name__ == "__main__":
