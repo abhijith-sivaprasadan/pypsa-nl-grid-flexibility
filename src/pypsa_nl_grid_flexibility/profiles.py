@@ -240,6 +240,7 @@ def first_complete_opsd_window(raw_path, *, year: int, hours: int = 168) -> pd.T
     finite = pd.Series(np.isfinite(values.to_numpy()).all(axis=1), index=whole_year)
     usable = finite & values.ge(0).all(axis=1) & values.gt(0).any(axis=1)
     full = usable.rolling(hours, min_periods=hours).sum().eq(hours)
+    full &= values.gt(0).rolling(hours, min_periods=hours).sum().ge(1).all(axis=1)
     if not full.any():
         raise ValueError(
             f"No complete {hours}h observed Dutch load/generation window in {year}"
