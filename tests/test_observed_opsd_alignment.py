@@ -1,4 +1,5 @@
 """Requested year, missingness and non-overlapping wind are strict OPSD gates."""
+
 from __future__ import annotations
 
 import pandas as pd
@@ -19,15 +20,10 @@ def config(start="2019-01-01 00:00", n=3):
 
 
 def write_source(path, *, drop=None, duplicate=False, missing=False):
-    times = ["2015-01-01T00:00:00Z"] + [
-        f"2019-01-01T0{i}:00:00Z" for i in range(3)
-    ]
+    times = ["2015-01-01T00:00:00Z"] + [f"2019-01-01T0{i}:00:00Z" for i in range(3)]
     rows = [
         ["2015-01-01T00:00:00Z", 999, 999, 999, 999],
-        *[
-            [times[i + 1], 100 + i, 10 + i, 20 + i, 40 + i]
-            for i in range(3)
-        ],
+        *[[times[i + 1], 100 + i, 10 + i, 20 + i, 40 + i] for i in range(3)],
     ]
     if drop is not None:
         del rows[drop]
