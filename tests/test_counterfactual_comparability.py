@@ -52,7 +52,7 @@ def test_tampered_renewable_balance_detected():
 
 
 def test_tampered_demand_balance_detected():
-    text = replace_field(raw(), "combined_bess_and_flex", "total_demand_mwh", 42)
+    text = replace_field(raw(), "flexible_connection_contract", "total_demand_mwh", 42)
     with pytest.raises(ValueError, match="Physical KPI identity"):
         audit_counterfactual_comparability(text)
 
