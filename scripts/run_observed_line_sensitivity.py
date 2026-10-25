@@ -38,7 +38,7 @@ def registered_grid() -> list[tuple[str, float]]:
     return [(scenario, f) for scenario in SCENARIOS for f in LINE_FACTORS]
 
 
-def build_study_config(base: dict, path: str, start: str = '2019-01-01 00:00') -> dict:
+def build_study_config(base: dict, path: str, start: str = "2019-01-01 00:00") -> dict:
     updated = deepcopy(base)
     updated["model"].update(
         {
@@ -59,7 +59,9 @@ def run(raw_file: Path, out_dir: Path) -> None:
     # Path is relative to PROJECT_ROOT to be consumed by the existing loader.
     rel = raw_file.resolve().relative_to(PROJECT_ROOT.resolve())
     selected = first_complete_opsd_window(raw_file, year=2019, hours=168)
-    config = build_study_config(base, str(rel), start=selected.strftime("%Y-%m-%d %H:%M"))
+    config = build_study_config(
+        base, str(rel), start=selected.strftime("%Y-%m-%d %H:%M")
+    )
     profiles = generate_profiles(config)  # Raises on missing or wrong 2019 hours.
     original = load_scenarios()
     records = []
